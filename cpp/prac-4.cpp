@@ -56,11 +56,3 @@ int main() {
     
     return 0;
 }
-
-code prac-1.c
-code prac-2.c
-code prac-3.c
-code prac-4.c
-code prac-5.c
-code prac-6.c
-code prac-7.c

@@ -44,7 +44,7 @@ def CovertMinToSec(min):
 min = int(input("Enter minutes: "))
 CovertMinToSec(min)
 
-#7.5) To reverse the digit of the numbers by function...
+# #7.5) To reverse the digit of the numbers by function...
 
 def Reverse(n):
   rev = 0

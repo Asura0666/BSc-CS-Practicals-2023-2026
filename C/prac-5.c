@@ -32,7 +32,7 @@ int main()
 void swap(int a, int b) {
     int temp = a;
     a = b;
-    b = a;
+    b = temp;
     printf("\nAfter swaping value in function a = %d and b = %d",a,b);
 }
 

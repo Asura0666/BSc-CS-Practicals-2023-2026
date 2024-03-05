@@ -1,22 +1,20 @@
-
 #include<stdio.h>
 #include<conio.h>
-int fr[3] = { -1, -1, -1 };
-void display() {
+
+void display(int fr[], int frsize) {
     printf("\n");
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < frsize; i++)
         printf("%d\t", fr[i]);
 }
-void main() {
-    clrscr();
+
+int main() {
     int page[12] = { 2, 3, 2, 1, 5, 2, 4, 5, 3, 2, 5, 2 };
-    int flag1 = 0, flag2 = 0, pf = 0, frsize = 3, top = 0;
-    for(int i = 0; i < 3; i++)
-        fr[i] = -1;
+    int fr[3] = { -1, -1, -1 };
+    int pf = 0, frsize = 3, top = 0;
+
     for(int j = 0; j < 12; j++) {
-        flag1 = 0;
-        flag2 = 0;
-        for(int i = 0; i < 12; i++) {
+        int flag1 = 0, flag2 = 0;
+        for(int i = 0; i < frsize; i++) {
             if(fr[i] == page[j]) {
                 flag1 = 1;
                 flag2 = 1;
@@ -32,19 +30,13 @@ void main() {
                 }
             }
             if(flag2 == 0) {
-                if(top > 0)
-                    top--;
-                else
-                    top = frsize - 1;
                 fr[top] = page[j];
+                top = (top + 1) % frsize; // Circular increment
                 pf++;
             }
         }
-        if(flag2 == 0) {
-            pf++;
-        }
-        display();
+        display(fr, frsize);
     }
-    printf("Number of page faults: %d ", pf + frsize);
-    getch();
+    printf("\nNumber of page faults: %d ", pf);
+    return 0;
 }

@@ -63,5 +63,5 @@ void main() {
     }
 
     display();
-    printf("\nNumber of page faults : %d", pf + frsize);
+    printf("\nNumber of page faults : %d", pf + frsize - 1);
 }

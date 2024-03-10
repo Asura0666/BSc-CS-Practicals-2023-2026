@@ -37,6 +37,6 @@ int main() {
         }
         display(fr, frsize);
     }
-    printf("\nNumber of page faults: %d ", pf);
+    printf("\nNumber of page faults: %d ", pf + frsize);
     return 0;
 }

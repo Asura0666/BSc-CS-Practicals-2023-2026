@@ -1,3 +1,7 @@
+/*
+    LRU Algorithm
+*/
+
 #include <stdio.h>
 #include <conio.h>
 

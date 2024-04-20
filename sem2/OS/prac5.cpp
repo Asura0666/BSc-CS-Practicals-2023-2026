@@ -1,3 +1,7 @@
+/*
+    FCFS Scheduling
+*/
+
 #include <stdio.h>
 
 int main() {

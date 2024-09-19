@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/output.css" />
+    <title>Home Page</title>
+  </head>
+  <body class="h-screen text-white bg-gray-900">
+    <main class="flex flex-col items-center h-full">
+      <nav class="w-full bg-gray-800 py-4 shadow-lg">
+        <ul class="flex justify-center space-x-6">
+          <li>
+            <a href="/register" class="text-lg hover:text-gray-400">Register</a>
+          </li>
+          <li>
+            <a href="/login" class="text-lg hover:text-gray-400">Login</a>
+          </li>
+          <% if (user) { %>
+            <li>
+              <a href="/logout" class="text-lg hover:text-gray-400">Logout</a>
+            </li>
+            <li>
+              <a href="/secret" class="text-lg hover:text-gray-400">Secret Page</a>
+            </li>
+          <% } else { %>
+            <li>
+              <a href="/logout" class="text-lg hover:text-gray-400">Logout</a>
+            </li>
+          <% } %>
+        </ul>
+      </nav>
+
+      <h1 class="mt-10 text-4xl font-bold">Welcome to the Home Page</h1>
+
+      <div class="mt-6 text-center">
+        <p class="text-xl">This is a sample application demonstrating the use of Tailwind CSS for styling.</p>
+        <p class="mt-2 text-lg">Use the navigation bar to register, login, or logout.</p>
+      </div>
+    </main>
+  </body>
+</html>

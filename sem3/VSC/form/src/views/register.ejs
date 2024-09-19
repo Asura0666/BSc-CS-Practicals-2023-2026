@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/output.css" />
+    <title>Register Page</title>
+  </head>
+  <body class="h-screen text-white bg-gray-900">
+    <main class="flex flex-col items-center h-full">
+      <nav class="w-full bg-gray-800 py-4 shadow-lg">
+        <ul class="flex justify-center space-x-6">
+          <li>
+            <a href="/register" class="text-lg hover:text-gray-400">Register</a>
+          </li>
+          <li>
+            <a href="/login" class="text-lg hover:text-gray-400">Login</a>
+          </li>
+          <% if (user) { %>
+            <li>
+              <a href="/logout" class="text-lg hover:text-gray-400">Logout</a>
+            </li>
+            <li>
+              <a href="/secret" class="text-lg hover:text-gray-400">Secret Page</a>
+            </li>
+          <% } else { %>
+            <li>
+              <a href="/logout" class="text-lg hover:text-gray-400">Logout</a>
+            </li>
+          <% } %>
+        </ul>
+      </nav>
+
+      <h1 class="mt-10 text-4xl font-bold">Welcome to the Register Page</h1>
+
+      <% if (messages.error) { %>
+      <div class="mt-4 p-4 bg-red-600 text-white rounded-lg">
+        <%= messages.error %>
+      </div>
+      <% } %> <% if (messages.success) { %>
+      <div class="mt-4 p-4 bg-green-600 text-white rounded-lg">
+        <%= messages.success %>
+      </div>
+      <% } %>
+
+      <div
+        class="mt-10 w-11/12 max-w-md mx-auto bg-gray-800 p-8 rounded-lg shadow-lg"
+      >
+        <form action="/register" method="post" class="flex flex-col space-y-4">
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            class="px-4 py-2 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
+          />
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            class="px-4 py-2 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
+          />
+          <input
+            type="date"
+            name="dob"
+            placeholder="Date of Birth"
+            class="px-4 py-2 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            class="px-4 py-2 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            class="px-4 py-2 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

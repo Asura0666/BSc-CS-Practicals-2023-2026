@@ -1,0 +1,117 @@
+/*
+* 1. make separate file for each code using .html extension
+* 2. using go live server you can run your file
+*/
+
+
+<!--Write a program to design html form (Firstname, Lastname, DOB, Contact No) and apply the filters (uppercase,lowercase,date and number) on each input.-->
+
+<!DOCTYPE html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body >
+    <div ng-app="myApp" ng-controller="myCtrl">
+        <p>First Name: <input type="text" ng-model="firstName"></p>
+        <p>Last Name: <input type="text" ng-model="lastName"></p>
+        <p>Contact No: <input type="number" ng-model="contactno"></p>
+        <p>DOB: <input type="text" ng-model="date"></p>
+        <br />
+        <p>First Name: {{firstName|uppercase}}</p>
+        <p>Last Name: {{lastName|lowercase}}</p>
+        <p>Contact No: {{contactno|number}}</p> 
+        <p>DOB: {{date|date}}</p>
+    </div>
+    <script>
+        const app = angular.module('myApp', []);
+        app.controller('myCtrl', ($scope) => {
+            $scope.firstName = ''
+            $scope.lastName = ''
+            $scope.contactno = ''
+            $scope.date = ''
+        })
+    </script>
+</body>
+</html>
+
+
+
+<!--Write a program to display a list and sort it using Order by filter-->
+
+<!DOCTYPE html>
+<html>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
+<div ng-app="myApp" ng-controller="namesCtrl">
+
+    <table border="1" width="70%">
+      <tr>
+        <th ng-click="orderByMe('name')">Name</th>
+        <th ng-click="orderByMe('country')">Country</th>
+      </tr>
+      <tr ng-repeat="x in names | orderBy:myOrderBy">
+        <td>{{x.name}}</td>
+        <td>{{x.country}}</td>
+      </tr>
+    </table>
+    
+    </div>
+    
+    <script>
+    angular.module('myApp', []).controller('namesCtrl', function($scope) {
+      $scope.names = [
+        {name:'',country:'India'},
+        {name:'',country:'Sweden'},
+        {name:'',country:'England'},
+        {name:'',country:'Norway'},
+        {name:'',country:'Denmark'},
+        {name:'',country:'Sweden'},
+        {name:'',country:'Denmark'},
+        {name:'',country:'England'},
+        {name:'',country:'Norway'}
+      ];
+      $scope.orderByMe = function(x) {
+        $scope.myOrderBy = x;
+      }
+    });
+    </script>
+</body>
+</html>
+
+
+<!--Write a program to create a custom filter.-->
+
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+<body>
+
+  <ul ng-app="myApp" ng-controller="namesCtrl">
+    <li ng-repeat="x in names">
+      {{x | myFormat}}
+    </li>
+  </ul>
+
+  <script>
+    var app = angular.module('myApp', []);
+    app.filter('myFormat', function () {
+      return function (x) {
+        var i, c, txt = "";
+        for (i = 0; i < x.length; i++) {
+          c = x[i];
+          if (i % 2 == 0) {
+            c = c.toUpperCase();
+          }
+          txt += c;
+        }
+        return txt;
+      };
+    });
+    app.controller('namesCtrl', function ($scope) {
+      $scope.names = ['Janu', 'Carl', 'Margareth', 'Hege', 'Joe', 'Gustav', 'Birgit', 'Mary', 'Kai'];
+    });
+  </script>
+</body>
+
+</html>

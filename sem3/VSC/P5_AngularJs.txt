@@ -1,0 +1,156 @@
+
+/*
+* 1. make separate file for each code using .html extension
+* 2. using go live server you can run your file
+*/
+
+<!--Write a program to design HTML page with two fields- FirstName and Lastname. Apply data binding on the same fields-->
+
+<!DOCTYPE html>
+<html>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
+    <div ng-app="" data-ng-init="firstName = 'yourname';lastName = 'surname'">
+        <p>First name is <span data-ng-bind="firstName"></span></p>
+        <p>Last name is <span data-ng-bind="lastName"></span></p>
+    </div>
+</body>
+</html>
+
+
+<!--Write a program to perform the task- addition, subtraction, division and multiplication using evaluation tag.-->
+
+<!DOCTYPE html>
+<html>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
+    <div ng-app="">
+        <p>Addition : {{5000 + 4000 }}</p>
+        <p>Subtraction : {{4000 - 2000 }}</p>
+        <p>Multiplication : {{5000 * 3000 }}</p>
+        <p>Division : {{3000 / 2000  }}</p>
+    </div>
+</body>
+</html>
+
+
+
+<!--Write a program to design a controller.-->
+
+<!DOCTYPE html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body >
+    <div ng-app="myApp" ng-controller="myCtrl">
+        <p>First Name: <input type="text" ng-model="firstName"></p>
+        <br />
+        <p>Last Name: <input type="text" ng-model="lastName"></p>
+        <br />
+        <p>Full Name: {{firstName + " " + lastName}}</p>
+    </div>
+    <script>
+        const app = angular.module('myApp', []);
+        app.controller('myCtrl', ($scope) => {
+            $scope.firstName = 'yourname'
+            $scope.lastName = 'surname'
+        })
+    </script>
+</body>
+</html>
+
+
+
+<!--Write a program to design registration form and add data binding and controller to it.-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AngularJS ng-model Directive</title>
+    <script src= "https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js">
+    </script>
+    <style>
+        body {
+            font-family: Arial;
+        }
+        h1 {
+            color: green;
+        }
+        .column {
+            float: left;
+            text-align: left;
+            width: 49%;
+        }
+        .row {
+            content: "";
+            display: table;
+        }
+    </style>
+</head>
+<body ng-app="myApp" ng-controller="myController">
+    <h1>Registration form </h1>
+    <h3>ng-model Directive</h3>
+    <h4>Input Box</h4>
+    <div class="row">
+        <div class="column">
+            Name:
+            <input type="text" ng-model="name">
+            <pre> {{ name }} </pre> 
+            Checkbox:
+            <input type="ch; eckbox" ng-model="check">
+            <pre> {{ check }} </pre> 
+            Radiobox:
+            <input type="radio" ng-model="choice">
+            <pre> {{ choice }} </pre> 
+            Number:
+            <input type="number" ng-model="num">
+            <pre> {{ num }} </pre> 
+            Email:
+            <input type="email" ng-model="mail">
+            <pre> {{ mail }} </pre> 
+            Url:
+            <input type="url" ng-model="url">
+            <pre> {{ url }} </pre>
+        </div>
+        <div class="column">
+            Date:
+            <input type="date" ng-model="date1" 
+                   (change)="log(date1)">
+            <pre> Todays date:{{ date1 }}</pre> 
+            Datetime-local:
+            <input type="datetime-local" ng-model="date2">
+            <pre> {{ date2 }} </pre> 
+            Time:
+            <input type="time" ng-model="time1">
+            <pre> {{ time1}} </pre> 
+            Month:
+            <input type="month" ng-model="mon">
+            <pre> {{ mon }} </pre> 
+            Week:
+            <input type="week" ng-model="we">
+            <pre> {{ we }} </pre>
+        </div>
+    </div>
+</body>
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myController', function ($scope) {
+        $scope.name = "";
+        $scope.check = "";
+        $scope.rad = "";
+        $scope.num = "";
+        $scope.mail = "";
+        $scope.url = "";
+        $scope.date1 = "";
+        $scope.date2 = "";
+        $scope.time1 = "";
+        $scope.mon = "";
+        $scope.we = "";
+        $scope.choice = "";
+        $scope.c = function () {
+            $scope.choice = true;
+        };
+    });
+</script>
+</html>
+

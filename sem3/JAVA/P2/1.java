@@ -1,3 +1,5 @@
+// concept of abstract classes and method 
+
 interface Drawable {
   void Draw();
 }

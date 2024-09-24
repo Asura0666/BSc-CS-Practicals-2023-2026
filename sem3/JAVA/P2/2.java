@@ -1,3 +1,5 @@
+// concept of interfaces
+
 abstract class bike {
   bike() {
     System.out.println("bike is created");

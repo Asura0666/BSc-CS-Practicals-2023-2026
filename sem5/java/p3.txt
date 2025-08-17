@@ -1,0 +1,104 @@
+-----------------------------------------------------------
+time Converter
+
+index.html:-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Time Converter</title>
+</head>
+<body>
+    <h2>Enter time in minutes:</h2>
+    <form action="convert" method="POST">
+        <input type="number" name="timeInMinutes" />
+        <input type="submit" value="Convert" />
+    </form>
+</body>
+</html>
+
+
+
+TimeServlet.java:-
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.annotation.WebServlet;
+
+@WebServlet("/convert")
+public class TimeServlet extends HttpServlet {
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res)
+        throws ServletException, IOException {
+
+        String minStr = req.getParameter("timeInMinutes");
+        int totalMinutes = Integer.parseInt(minStr);
+
+        int hours = totalMinutes / 60;
+        int minutes = totalMinutes % 60;
+
+        res.setContentType("text/html");
+        PrintWriter out = res.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>Time Conversion</h1>");
+        out.println("<p>Input: " + totalMinutes + " minutes</p>");
+        out.println("<p>Output: " + hours + " hour(s) and " + minutes + " minute(s)</p>");
+        out.println("</body></html>");
+    }
+}
+
+-------------------------------------------------------------
+
+multiplication table
+
+multiply.html:
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiplication Table Input</title>
+</head>
+<body>
+    <h2>Enter a number:</h2>
+    <form action="multiplication" method="post">
+        <input type="number" name="number" required />
+        <input type="submit" value="Show Table" />
+    </form>
+</body>
+</html>
+
+MultiplyServlet.java:
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/multiplication")
+public class MultiplyServlet extends HttpServlet {
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res)
+        throws ServletException, IOException {
+
+        int number = Integer.parseInt(req.getParameter("number"));
+
+        res.setContentType("text/html");
+        PrintWriter out = res.getWriter();
+
+        out.println("<html><body>");
+        out.println("<h1>Multiplication Table for " + number + "</h1>");
+        out.println("<table border='1' cellpadding='5' cellspacing='0'>");
+        for (int i = 1; i <= 10; i++) {
+            out.println("<tr>");
+            out.println("<td>" + number + " x " + i + "</td>");
+            out.println("<td>" + (number * i) + "</td>");
+            out.println("</tr>");
+        }
+        out.println("</table>");
+        out.println("</body></html>");
+
+        out.close();
+    }
+}

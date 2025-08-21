@@ -1,0 +1,1 @@
+pip install ipykernel -U --user --force-reinstall

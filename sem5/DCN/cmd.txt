@@ -1,0 +1,12 @@
+| Command           | Purpose                                            | Syntax                   | Example                  |
+| ----------------- | -------------------------------------------------- | ------------------------ | ------------------------ |
+| **ping**          | Test connectivity to an IP or hostname             | `ping <IP/hostname>`     | `ping 8.8.8.8`           |
+| **hostname**      | Show current device’s hostname                     | `hostname`               | `hostname`               |
+| **getmac**        | Display MAC addresses of local network             | `getmac`                 | `getmac`                 |
+| **systeminfo**    | Show detailed system info (Windows only)           | `systeminfo`             | `systeminfo`             |
+| **ipconfig**      | Show IP configuration of network interfaces        | `ipconfig`               | `ipconfig`               |
+| **ipconfig /all** | Show detailed IP config (including DNS, MAC, etc.) | `ipconfig /all`          | `ipconfig /all`          |
+| **nslookup**      | Query DNS to resolve hostname/IP                   | `nslookup <hostname/IP>` | `nslookup`               |
+| **tracert**       | Show route/path packets take                       | `tracert <hostname/IP>`  | `tracert www.google.com` |
+| **netstat**       | Show active network connections and ports          | `netstat [options]`      | `netstat -an`            |
+| **arp**           | Show IP-to-MAC mappings (ARP table)                | `arp -a`                 | `arp -a`                 |

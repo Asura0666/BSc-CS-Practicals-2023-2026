@@ -1,0 +1,121 @@
+Practical 3: -> Save Image
+
+
+package mypkg;
+
+import java.io.*;
+import javax.jws.Oneway;
+import javax.jws.WebService;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.xml.ws.soap.MTOM;
+
+/**
+ *
+ * @author IT LAB 06
+ */
+@MTOM(enabled=true, threshold=60000)
+@WebService(serviceName = "ImageWs")
+public class ImageWs {
+
+   @WebMethod(operationName = "upload")
+    @Oneway
+    public void upload(@WebParam(name = "FileName") String Filename,
+                       @WebParam(name = "ImageBytes") byte[] ImageBytes) {
+
+        String filePath = "C:/TY41/Upload/" + Filename;
+        try {
+            FileOutputStream fos = new FileOutputStream(filePath);
+            try (BufferedOutputStream bos = new BufferedOutputStream(fos)) {
+                bos.write(ImageBytes);
+            }
+
+            System.out.println("Received file :" + filePath);
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
+
+    @WebMethod(operationName = "download")
+    public byte[] download(@WebParam(name = "FileName") String Filename) {
+
+        String filePath = "C:/TY41/Upload/" + Filename;
+        System.out.println("Sending file :" + filePath);
+
+        try {
+            File file = new File(filePath);
+            FileInputStream fis = new FileInputStream(file);
+            byte[] fileBytes;
+            try (BufferedInputStream bis = new BufferedInputStream(fis)) {
+                fileBytes = new byte[(int) file.length()];
+                bis.read(fileBytes);
+            }
+            return fileBytes;
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+
+        return null;
+    }
+}
+[9:03 pm, 27/01/2026] soham kadam: <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.io.BufferedOutputStream"%>
+<%@page import="java.io.FileOutputStream"%>
+<%@page import="java.io.FileInputStream"%>
+<%@page import="java.io.BufferedInputStream"%>
+<%@page import="javax.imageio.stream.FileImageInputStream"%>
+<%@page import="java.io.File"%>
+<%@page import="javax.xml.ws.soap.MTOMFeature"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JSP Page</title>
+</head>
+<body>
+<%
+try {
+    pkg.ImageWs_Service service = new pkg.ImageWs_Service();
+    pkg.ImageWs port = service.getImageWsPort(new MTOMFeature(60000));
+
+    String filePath = "C:/TY41/flower.jpg";
+    File file = new File(filePath);
+    FileInputStream fis = new FileInputStream(file);
+    BufferedInputStream bis = new BufferedInputStream(fis);
+
+    String filename = file.getName();
+    byte[] imageBytes = new byte[(int) file.length()];
+    bis.read(imageBytes);
+
+    port.upload(filename, imageBytes);
+
+    bis.close();
+    out.println("File uploaded : " + filePath);
+
+} catch (Exception ex) {
+    out.println("Error: " + ex.getMessage());
+}
+%>
+<%
+try {
+pkg.ImageWs_Service service = new pkg.ImageWs_Service();
+pkg.ImageWs port = service.getImageWsPort();
+// TODO initialize WS operation arguments here
+java.lang.String filename = "flower.jpg";
+String filePath="C:/TY41/Download/"+filename;
+// TODO process result here
+byte[] fileBytes = port.download(filename);
+FileOutputStream fos=new FileOutputStream(filePath);
+BufferedOutputStream bos=new BufferedOutputStream(fos);
+bos.write(fileBytes);
+bos.close();
+out.println("File downloaded"+filePath);
+} catch (Exception ex) {
+// TODO handle custom exceptions here
+}
+%>
+</body>
+</html>

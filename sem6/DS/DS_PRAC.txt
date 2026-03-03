@@ -1,0 +1,576 @@
+#Practical 2.1: extracting different types of data
+
+# Install the tidyverse package if you haven't already
+install.packages("tidyverse") 
+
+# Load the necessary libraries
+library(tidyverse) 
+data_csv <- read_csv("C:/Users/ADMIN/Downloads/diabetes.csv") 
+
+install.packages("readxl") 
+library(readxl)
+data_csv <- read_csv("C:/Users/ADMIN/Downloads/diabetes.csv")
+# Specify sheet number or name
+
+install.packages("jsonlite") 
+library(jsonlite)
+data_json <- fromJSON("data.json")
+
+# Load required package
+library(tidyverse)
+
+# Create data frame
+my_data <- data.frame(
+  ID = 1:5,
+  Name = c("Alice", "Bob", "Charlie", "David", "Eve"),
+  Age = c(25, 30, NA, 22, 35),
+  Score = c(85.5, 92.0, 78.5, 95.0, 150.0),
+  City = c("NY", "LA", "NY", "Boston", NA)
+)
+
+# View structure
+str(my_data)
+head(my_data)
+
+# Check missing values
+colSums(is.na(my_data))
+
+# Calculate mean age (IMPORTANT STEP YOU MISSED)
+mean_age <- mean(my_data$Age, na.rm = TRUE)
+
+# Impute missing Age values
+my_data_imputed <- my_data %>%
+  mutate(Age = replace_na(Age, mean_age))
+
+# Remove rows with missing City
+my_data_cleaned <- my_data_imputed %>%
+  filter(!is.na(City))
+
+# Outlier detection using IQR
+Q1 <- quantile(my_data_cleaned$Score, 0.25)
+Q3 <- quantile(my_data_cleaned$Score, 0.75)
+IQR_val <- Q3 - Q1
+
+upper_bound <- Q3 + 1.5 * IQR_val
+lower_bound <- Q1 - 1.5 * IQR_val
+
+# Cap outliers
+my_data_capped <- my_data_cleaned %>%
+  mutate(
+    Score_Capped = case_when(
+      Score > upper_bound ~ upper_bound,
+      Score < lower_bound ~ lower_bound,
+      TRUE ~ Score
+    )
+  )
+
+# Filter NY data
+ny_data <- my_data_capped %>%
+  filter(City == "NY")
+print(ny_data)
+
+# Sort data
+sorted_data <- my_data_capped %>%
+  arrange(Age, desc(Score_Capped))
+print(sorted_data)
+
+# Group and summarize
+grouped_data <- my_data_capped %>%
+  group_by(City) %>%
+  summarise(
+    Avg_Score = mean(Score_Capped),
+    Total_Count = n()
+  ) %>%
+  ungroup()
+
+print(grouped_data)
+
+# Add performance category
+grouped_data_transformed <- grouped_data %>%
+  mutate(
+    Performance_Category = case_when(
+      Avg_Score >= 90 ~ "High",
+      Avg_Score >= 80 ~ "Medium",
+      TRUE ~ "Low"
+    )
+  )
+
+print(grouped_data_transformed)
+
+
+#practical 2.2: working with databases
+
+#MYSQL CMD:
+create database TYCS_84;
+use TYCS_84;
+CREATE TABLE article (
+     srno INT,
+     type VARCHAR(255)
+      );
+
+
+#R Script:
+install.packages("RMySQL")
+library("RMySQL")
+//establish mysql connection only once
+mysqlconn = dbConnect(MySQL(), user="root", password="123456", dbname="TYCS_84", host = "localhost")
+
+dbListTables(mysqlconn)
+dbWriteTable(mysqlconn, "mtcars", mtcars[1:10, ], overwrite = TRUE)
+
+dbListTables(mysqlconn)
+
+dbSendQuery(mysqlconn, "DROP TABLE mtcars")
+
+dbListTables(mysqlconn)
+
+dbSendQuery(mysqlconn, "INSERT INTO article(srno, type) values(1, 'R Language')")
+
+dbSendQuery(mysqlconn, "INSERT INTO article(srno, type) values(2, 'C Language')")
+
+dbSendQuery(mysqlconn, "INSERT INTO article(srno, type) values(3, 'Rust Language')")
+
+dbSendQuery(mysqlconn, "UPDATE article SET srno = 10 where type = 'R Language'")
+
+res = dbSendQuery(mysqlconn, "SELECT * FROM article")
+
+df = fetch(res, n =3)
+
+print(df)
+
+
+
+
+
+
+
+
+#Practical 3:exploratory data analysis
+
+diabet<-read.csv(file.choose(),header = TRUE,sep = ",") 
+
+head(diabet)
+
+str(diabet)
+
+summary(diabet)
+
+diabet[1:10,]
+
+diabet[,1:2]
+
+diabet[1:10,1:2]
+
+newdata1<-subset(diabet,diabet$Outcome=="1")
+newdata1
+
+newdata2<-subset(diabet,diabet$Pregnancies=="1" & diabet$Outcome=="0")
+newdata2
+
+newdata3<-subset(diabet,diabet$Pregnancies=="1" | diabet$Outcome=="0",select=c(1,2))
+newdata3
+
+newdata4<-diabet[order(diabet$BMI), ]
+newdata4
+
+newdata5<-diabet[order(-diabet$BMI),]
+newdata5
+
+newdata6<-aggregate(BMI~Outcome,data=diabet,FUN=mean)
+newdata6
+
+colSums(is.na(diabet))
+
+hist(diabet$BMI)
+
+boxplot(diabet$BMI)
+
+boxplot(diabet$BloodPressure)
+
+mean(diabet$BMI)
+median(diabet$BMI)
+max(diabet$BMI)
+min(diabet$BMI)
+
+
+#Practical 4: encoding dummification & scaling
+
+# Install once
+install.packages("readxl")
+library(readxl)
+
+# Load dataset
+df <- read.csv("C:/Users/ADMIN/Downloads/Impact of Smartphone Usage on Mental Health .csv")
+# Make a copy for label encoding
+df_encoded <- df
+
+# Label encode categorical columns
+df_encoded[] <- lapply(df_encoded, function(col) {
+  if (is.character(col) || is.factor(col)) {
+    return(as.numeric(as.factor(col)))
+  } else {
+    return(col)
+  }
+})
+
+head(df_encoded)
+
+
+
+# Install once
+install.packages("fastDummies")
+
+library(fastDummies)
+
+# Create dummy variables
+df_dummy <- dummy_cols(
+  df,
+  remove_first_dummy = TRUE,       # Avoid dummy trap
+  remove_selected_columns = TRUE   # Removes original categorical columns
+)
+
+head(df_dummy)
+
+
+
+# Identify numeric columns
+num_cols <- sapply(df_dummy, is.numeric)
+
+# Scale numeric features
+df_scaled <- df_dummy
+df_scaled[num_cols] <- scale(df_dummy[num_cols])
+
+head(df_scaled)
+
+
+#Practical 5:hypothesis testing & anova
+
+colnames(data)
+
+data <- read.csv(file.choose(), stringsAsFactors = FALSE)
+
+likert_map <- function(x) {
+  x <- trimws(x)
+  ifelse(x == "Never", 1,
+         ifelse(x == "Rarely", 2,
+                ifelse(x == "Sometimes", 3,
+                       ifelse(x == "Often", 4,
+                              ifelse(x == "Very Often", 5,
+                                     ifelse(x == "Always", 5, NA))))))
+}
+
+data$sleep_disturb <- likert_map(
+  data[["Does.your.phone.disturb.your.sleep.or.keep.you.awake..."]]
+)
+
+data$day_sleepy <- likert_map(
+  data[["Do.you.feel.tired.or.sleepy.during.the.day.because.of.late.night.phone.use..."]]
+)
+
+valid_data <- na.omit(data[, c("sleep_disturb", "day_sleepy")])
+
+one_sample_test <- t.test(valid_data$sleep_disturb, mu = 3)
+one_sample_test
+
+paired_test <- t.test(
+  valid_data$sleep_disturb,
+  valid_data$day_sleepy,
+  paired = TRUE
+)
+paired_test
+
+
+
+# --------------------------------------------------
+# 1. LOAD YOUR FILE (use your uploaded dataset)
+# --------------------------------------------------
+data <- read.csv("C:/Users/ADMIN/Downloads/Impact of Smartphone Usage on Mental Health .csv",
+                 header = TRUE, stringsAsFactors = FALSE)
+
+# See original column names
+print(names(data))
+
+# --------------------------------------------------
+# 2. CLEAN COLUMN NAMES (so R can use them easily)
+# --------------------------------------------------
+names(data) <- make.names(names(data))
+print(names(data))   # look at the new names
+
+# --------------------------------------------------
+# 3. CREATE VARIABLES YOU ACTUALLY NEED
+# --------------------------------------------------
+
+# Predictor: phone use hours (ordered factor)
+data$Smartphone_Usage <- factor(
+  data$How.many.hours.do.you.use.your.phone.on.a.normal.day.,
+  levels = c("1 - 3 hours", "3 - 5 hours", "5 - 7 hours", "More than 7 hours"),
+  ordered = TRUE
+)
+
+# Outcome: convert mental health question to numeric score
+data$Mental_Health_Score <- as.numeric(factor(
+  data$Overall..do.you.feel.that.your.smartphone.use.is.affecting.your.mental.well.being.,
+  levels = c("Not at all", "A little", "Sometimes", "Often", "Very often"),
+  labels = c(1, 2, 3, 4, 5)
+))
+
+# Check structure
+str(data)
+
+# --------------------------------------------------
+# 4. ONE-WAY ANOVA (correct for your data)
+# --------------------------------------------------
+one_way_aov <- aov(Mental_Health_Score ~ Smartphone_Usage, data = data)
+summary(one_way_aov)
+
+# --------------------------------------------------
+# 5. TWO-WAY ANOVA (add Gender)
+# --------------------------------------------------
+data$Gender <- as.factor(data$What.is.your.gender.)
+
+two_way_aov <- aov(Mental_Health_Score ~ Smartphone_Usage * Gender, data = data)
+summary(two_way_aov)
+
+# --------------------------------------------------
+# 6. MODEL COMPARISON
+# --------------------------------------------------
+install.packages("AICcmodavg")
+library(AICcmodavg)
+
+model.set <- list(one_way_aov, two_way_aov)
+model.names <- c("One_Way_ANOVA", "Two_Way_ANOVA")
+aictab(model.set, modnames = model.names)
+
+# --------------------------------------------------
+# 7. PLOTS
+# --------------------------------------------------
+install.packages("ggplot2")
+install.packages("gridExtra")
+library(ggplot2)
+library(gridExtra)
+
+plot1 <- ggplot(data, aes(x = Smartphone_Usage,
+                          y = Mental_Health_Score,
+                          fill = Smartphone_Usage)) +
+  geom_boxplot(alpha = 0.7) +
+  theme_minimal() +
+  labs(title = "One-Way ANOVA",
+       x = "Smartphone Usage (Hours)",
+       y = "Mental Health Score (1–5)")
+
+plot2 <- ggplot(data, aes(x = Smartphone_Usage,
+                          y = Mental_Health_Score,
+                          fill = Gender)) +
+  geom_boxplot(alpha = 0.7) +
+  theme_minimal() +
+  labs(title = "Two-Way ANOVA",
+       x = "Smartphone Usage (Hours)",
+       y = "Mental Health Score (1–5)")
+
+grid.arrange(plot1, plot2, ncol = 2)
+
+
+#Practical 6:Regression analysis
+
+#simple linear regression
+install.packages("ggplot2")
+
+library(ggplot2) 
+data <- mtcars 
+model <- lm(mpg ~ hp, data = data) 
+summary(model) 
+ggplot(data, aes(x = hp, y = mpg)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", col = "pink") + 
+  theme_minimal() 
+
+
+
+#Multiple linear regression
+model_multi <- lm(mpg ~ hp + wt + cyl, data = data) 
+summary(model_multi) 
+
+
+
+#Logistic regression
+data <- iris
+data$Species <- ifelse(data$Species == "setosa", 1, 0) 
+model_logistic <- glm(Species ~ Sepal.Length + Sepal.Width, data = data, family = binomial) 
+summary(model_logistic) 
+
+
+#Bayesian estimation 
+install.packages("bayesreg") 
+library(bayesreg) 
+bayes_model <- bayesreg(mpg ~ hp + wt, data = mtcars, prior = "ridge") 
+summary(bayes_model) 
+
+
+options(timeout = 1000)
+install.packages("glmnet")
+
+
+#Ridge regression 
+install.packages("glmnet")
+
+library(glmnet) 
+x <- model.matrix(mpg ~ hp + wt, data = mtcars)[, -1] # Remove intercept 
+y <- mtcars$mpg 
+ridge_model <- glmnet(x, y, alpha = 0) 
+lasso_model <- glmnet(x, y, alpha = 1) 
+print(ridge_model) 
+print(lasso_model) 
+
+
+install.packages("lattice")
+#model selection
+install.packages("caret")
+library(caret) 
+train_control <- trainControl(method = "cv", number = 5) 
+cv_model <- train(mpg ~ hp + wt, data = mtcars, method = "lm", trControl = train_control) 
+print(cv_model) 
+
+#Practical 7:decision tree and random forest
+
+library(rpart)
+library(rpart.plot)
+library(caret)
+
+data(iris)
+set.seed(123)
+train_index <- createDataPartition(iris$Species, p = 0.8, list = FALSE)
+train_data <- iris[train_index, ]
+test_data <- iris[-train_index, ]
+
+tree_model <- rpart(Species ~ ., data = train_data, method = "class", 
+control = rpart.control(minsplit = 10, cp = 0.01))
+
+rpart.plot(tree_model, box.palette = "auto", nn = TRUE)
+
+predictions <- predict(tree_model, test_data, type = "class")
+confusionMatrix(predictions, test_data$Species)
+
+printcp(tree_model)
+optimal_cp <-
+  tree_model$cptable[which.min(tree_model$cptable[, "xerror"]), "CP"]
+pruned_tree <- prune(tree_model, cp = optimal_cp)
+rpart.plot(pruned_tree)
+
+control <- trainControl(method = "cv", number = 10)
+tuned_tree <- train(Species ~., 
+                    data = iris,
+                    method = "rpart",
+                    trControl = control,
+                    tuneGrid = expand.grid(cp = seq(0.01, 0.1)))
+print(tuned_tree)
+
+
+
+install.packages("randomForest")
+
+library(randomForest)
+data(iris)
+head(iris)
+set.seed(42)
+trainIndex <- sample(1:nrow(iris), 0.8 * nrow(iris))
+trainData <- iris[trainIndex, ]
+testData <- iris[-trainIndex, ]
+rf_model <- randomForest(Species ~ ., data = trainData)
+print(rf_model)
+
+library(caret)
+
+predictions <- predict(rf_model, testData)
+confusionMatrix(predictions, testData$Species)
+
+rf_tuned <- randomForest(Species ~ ., data = trainData, ntree = 500, mtry = 2)
+print(rf_tuned)
+
+
+importance(rf_model)
+varImpPlot(rf_model)
+
+
+
+Practical 8: clustering
+
+data(iris)
+head(iris)
+
+install.packages("factoextra")
+install.packages("cluster")
+
+library(factoextra)
+library(cluster)
+
+plot(iris$Sepal.Length, 
+     iris$Sepal.Width, 
+     main = "Sepal Length vs Sepal Width", 
+     xlab = "Sepal Length", 
+     ylab = "Sepal Width")
+
+iris_1 <- iris[, -5]
+set.seed(240)
+kmeans.re <- kmeans(iris_1, centers = 3, nstart = 20)
+kmeans.re
+
+cm <- table(iris$Species, kmeans.re$cluster)
+cm
+
+fviz_cluster(kmeans.re, data = iris_1, 
+             main = "K-Means Clusters", 
+             xlab = "Sepal Length", 
+             ylab = "Sepal Width")
+
+#Practical 9: PCA
+
+install.packages("corrr")
+library(corrr)
+install.packages("ggcorrplot")
+library(ggcorrplot)
+install.packages("FactoMineR")
+library(FactoMineR)
+protein_data <- read.csv("C:/Users/ADMIN/Downloads/protein.csv")
+str(protein_data)
+colSums(is.na(protein_data))
+numerical_data <- protein_data[,2:10]
+head(numerical_data)
+data_normalized <- scale(numerical_data)
+head(data_normalized)
+data.pca <- princomp(data_normalized)
+summary(data.pca)
+data.pca$loadings[, 1:2]
+fviz_eig(data.pca, addlabels = TRUE)
+# Graph of the variables
+fviz_pca_var(data.pca, col.var = "black")
+fviz_cos2(data.pca, choice = "var", axes = 1:2)
+fviz_pca_var(data.pca, col.var = "cos2",
+            gradient.cols = c("black", "orange", "green"),
+            repel = TRUE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
